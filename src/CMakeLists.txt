@@ -30,7 +30,7 @@ add_executable(vban_sendtext
     
 include(GNUInstallDirs)
 
-foreach(exe vban_receptor vban_emitter vban_sendtext)
+foreach(exe vban_receptor vban_sendtext)
     target_include_directories(${exe} PRIVATE .)
     if(WITH_ALSA)
         target_compile_definitions(${exe} PRIVATE ALSA)
@@ -57,16 +57,10 @@ if(WITH_ALSA)
     target_sources(vban_receptor PRIVATE
         common/backend/alsa_backend.h
         common/backend/alsa_backend.c)
-    target_sources(vban_emitter PRIVATE
-        common/backend/alsa_backend.h
-        common/backend/alsa_backend.c)
 endif()
 
 if(WITH_PULSEAUDIO)
     target_sources(vban_receptor PRIVATE
-        common/backend/pulseaudio_backend.h
-        common/backend/pulseaudio_backend.c)
-    target_sources(vban_emitter PRIVATE
         common/backend/pulseaudio_backend.h
         common/backend/pulseaudio_backend.c)
 endif()
