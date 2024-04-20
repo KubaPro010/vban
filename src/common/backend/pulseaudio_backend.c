@@ -154,31 +154,3 @@ int pulseaudio_write(audio_backend_handle_t handle, char const* data, size_t siz
 
     return (ret < 0) ? ret : size;
 }
-
-int pulseaudio_read(audio_backend_handle_t handle, char* data, size_t size)
-{
-    int ret = 0;
-    int error;
-    struct pulseaudio_backend_t* const pulseaudio_backend = (struct pulseaudio_backend_t*)handle;
-
-    if ((handle == 0) || (data == 0))
-    {
-        logger_log(LOG_ERROR, "%s: handle or data pointer is null", __func__);
-        return -EINVAL;
-    }
-
-    if (pulseaudio_backend->pulseaudio_handle == 0)
-    {
-        logger_log(LOG_ERROR, "%s: device not open", __func__);
-        return -ENODEV;
-    }
-
-    ret = pa_simple_read(pulseaudio_backend->pulseaudio_handle, data, size, &error);
-    if (ret < 0)
-    {
-        logger_log(LOG_ERROR, "%s: pa_simple_read failed: %s", __func__, pa_strerror(error));
-    }
-
-    return (ret < 0) ? ret : size;
-}
-

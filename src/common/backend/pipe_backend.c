@@ -151,23 +151,3 @@ int pipe_write(audio_backend_handle_t handle, char const* data, size_t size)
     }
     return ret;
 }
-
-int pipe_read(audio_backend_handle_t handle, char* data, size_t size)
-{
-    int ret = 0;
-    struct pipe_backend_t* const pipe_backend = (struct pipe_backend_t*)handle;
-
-    if ((handle == 0) || (data == 0))
-    {
-        logger_log(LOG_ERROR, "%s: handle or data pointer is null", __func__);
-        return -EINVAL;
-    }
-
-    ret = read(pipe_backend->fd, (void *)data, size);
-    if (ret < 0)
-    {
-        logger_log(LOG_ERROR, "%s:", __func__);
-        perror("read");
-    }
-    return ret;
-}

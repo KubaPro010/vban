@@ -212,7 +212,7 @@ int socket_open(socket_handle_t handle)
         }
     }
 
-    logger_log(LOG_INFO, "%s: opened socket with port: %d", __func__, handle->config.port);
+    logger_log(LOG_INFO, "%s: opened socket: %s:%d", __func__, handle->config.ip_address, handle->config.port);
 
     return 0;
 }

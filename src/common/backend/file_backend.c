@@ -135,25 +135,3 @@ int file_write(audio_backend_handle_t handle, char const* data, size_t size)
     }
     return ret;
 }
-
-int file_read(audio_backend_handle_t handle, char* data, size_t size)
-{
-    int ret = 0;
-    struct file_backend_t* const file_backend = (struct file_backend_t*)handle;
-
-    if ((handle == 0) || (data == 0))
-    {
-        logger_log(LOG_ERROR, "%s: handle or data pointer is null", __func__);
-        return -EINVAL;
-    }
-
-    ret = read(file_backend->fd, (void *)data, size);
-    if (ret < 0)
-    {
-        logger_log(LOG_ERROR, "%s:", __func__);
-        perror("write");
-    }
-
-    return ret;
-}
-
