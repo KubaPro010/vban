@@ -47,7 +47,16 @@ struct main_t
 static int MainRun = 1;
 void signalHandler(int signum)
 {
-    MainRun = 0;
+    switch (signum)
+    {
+    case 9:
+    case SIGINT:
+    case SIGTERM:
+        MainRun = 0;
+        break;
+    default:
+        break;
+    }
 }
 
 void usage()
@@ -90,6 +99,10 @@ static size_t computeSize(unsigned char quality)
 
         case 4:
             nnn = 8192;
+            break;
+        
+        case 5:
+            nnn = 16384;
             break;
 
         default:
@@ -206,7 +219,7 @@ int main(int argc, char* const* argv)
     struct stream_config_t stream_config;
     struct main_t   main_s;
 
-    printf("vban_receptor version %s\n\n", VBAN_VERSION);
+    printf("vban_receptor version %s (radioOS edit)\n\n", VBAN_VERSION);
 
     memset(&config, 0, sizeof(struct config_t));
     memset(&main_s, 0, sizeof(struct main_t));
@@ -238,33 +251,33 @@ int main(int argc, char* const* argv)
     while (MainRun)
     {
         size = socket_read(main_s.socket, main_s.buffer, VBAN_PROTOCOL_MAX_SIZE);
-        if (size < 0)
-        {
-            MainRun = 0;
-            break;
-        }
+        // if (size < 0)
+        // {
+        //     MainRun = 0;
+        //     break;
+        // }
 
         if (packet_check(config.stream_name, main_s.buffer, size) == 0)
         {
             packet_get_stream_config(main_s.buffer, &stream_config);
 
             ret = audio_set_stream_config(main_s.audio, &stream_config);
-            if (ret < 0)
-            {
-                MainRun = 0;
-                break;
-            }
+            // if (ret < 0)
+            // {
+            //     MainRun = 0;
+            //     break;
+            // }
 
             ret = audio_write(main_s.audio, PACKET_PAYLOAD_PTR(main_s.buffer), PACKET_PAYLOAD_SIZE(size));
-            if (ret != PACKET_PAYLOAD_SIZE(size))
-            {
-                logger_log(LOG_WARNING, "%s: wrote %d bytes, expected %d bytes", __func__, ret, PACKET_PAYLOAD_SIZE(size));
-            }
-            else if (ret < 0)
-            {
-                MainRun = 0;
-                break;
-            }
+            // if (ret != PACKET_PAYLOAD_SIZE(size))
+            // {
+            //     logger_log(LOG_WARNING, "%s: wrote %d bytes, expected %d bytes", __func__, ret, PACKET_PAYLOAD_SIZE(size));
+            // }
+            // else if (ret < 0)
+            // {
+            //     MainRun = 0;
+            //     break;
+            // }
         }
     }
 
@@ -273,4 +286,3 @@ int main(int argc, char* const* argv)
 
     return 0;
 }
-

@@ -94,8 +94,8 @@ int pulseaudio_open(audio_backend_handle_t handle, char const* device_name, enum
         return -EINVAL;
     }
 
-    pulseaudio_backend->pulseaudio_handle = pa_simple_new(0, "vban", (direction == AUDIO_OUT) ? PA_STREAM_PLAYBACK : PA_STREAM_RECORD, (device_name[0] == '\0') ? 0 : device_name,
-        (direction == AUDIO_OUT) ? "playback": "record", &ss, 0, (direction == AUDIO_OUT) ? &ba : 0, &ret);
+    pulseaudio_backend->pulseaudio_handle = pa_simple_new(0, "vban", PA_STREAM_PLAYBACK, (device_name[0] == '\0') ? 0 : device_name,
+        "playback", &ss, 0, (direction == AUDIO_OUT) ? &ba : 0, &ret);
     if (pulseaudio_backend->pulseaudio_handle == 0)
     {
         logger_log(LOG_FATAL, "pulseaudio_open: open error: %s", pa_strerror(ret));

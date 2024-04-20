@@ -25,7 +25,6 @@ endif()
 
 option(WITH_ALSA       "Build vban with ALSA support"       ON)
 option(WITH_PULSEAUDIO "Build vban with PulseAudio support" ON)
-option(WITH_JACK       "Build vban with JACK support"       ON)
 
 #set(CMAKE_VERBOSE_MAKEFILE ON)
 
@@ -59,18 +58,6 @@ if(WITH_PULSEAUDIO)
     endif()
 else()
     message(STATUS "building without PulseAudio backend")
-endif()
-if(WITH_JACK)
-    include(FindPkgConfig)
-    pkg_search_module(JACK jack QUIET)
-    if(JACK_FOUND)
-        message(STATUS "found dependency JACK: ${JACK_VERSION} '${JACK_INCLUDEDIR}' '${JACK_LIBRARIES}'")
-    else()
-        message(STATUS "missing JACK dependency, disabling backend")
-        message(FATAL_ERROR "missing JACK dependency. If you want to disable backend set WITH_JACK=No")
-    endif()
-else()
-    message(STATUS "building without JACK backend")
 endif()
 
 

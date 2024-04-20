@@ -56,20 +56,4 @@ AM_COND_IF([PULSEAUDIO],
 	[:]
 )
 
-# Manage conditional jackd enabling
-AC_ARG_ENABLE([jack],
-[  --enable-jack    Turn on jack backend ],
-[case "${enableval}" in
-  yes) jack=true ;;
-  no)  jack=false ;;
-  *) AC_MSG_ERROR([bad value ${enableval} for --enable-jack. default is yes]) ;;
-esac],[jack=true])
-AM_CONDITIONAL([JACK], [test x$jack = xtrue])
-
-AM_COND_IF([JACK],
-	[AC_CHECK_HEADERS([jack/jack.h], [], [AC_MSG_ERROR(Missing jack headers)])
-	AC_CHECK_LIB([jack], [jack_client_open], [], [AC_MSG_ERROR(Missing jack library)])],
-	[:]
-)
-
 AC_OUTPUT(Makefile src/Makefile)

@@ -97,8 +97,8 @@ int audio_init(audio_handle_t* handle, struct audio_config_t const* config)
 
     (*handle)->config       = *config;
 
-    logger_log(LOG_INFO, "%s: config is direction %s, backend %s, device %s, buffer size %d",
-        __func__, (config->direction == AUDIO_IN) ? "in" : "out", config->backend_name, config->device_name, config->buffer_size);
+    logger_log(LOG_INFO, "%s: backend %s, device %s, buffer size %d",
+        __func__, config->backend_name, config->device_name, config->buffer_size);
     
     ret = audio_backend_get_by_name(config->backend_name, &((*handle)->backend));
     if (ret != 0)
@@ -161,7 +161,7 @@ int audio_set_stream_config(audio_handle_t handle, struct stream_config_t const*
         return ret;
     }
 
-    logger_log(LOG_INFO, "%s: new stream config is nb channels %d, sample rate %d, bit_fmt %s",
+    logger_log(LOG_INFO, "%s: stream config is channels %d, sample rate %d, bit_fmt %s",
         __func__, config->nb_channels, config->sample_rate, stream_print_bit_fmt(config->bit_fmt));
 
     ret = handle->backend->close(handle->backend);
@@ -215,7 +215,7 @@ int audio_set_map_config(audio_handle_t handle, struct audio_map_config_t const*
         return -EINVAL;
     }
 
-    logger_log(LOG_INFO, "%s: new map config is nb channels %d", __func__, config->nb_channels);
+    // logger_log(LOG_INFO, "%s: new map config is nb channels %d", __func__, config->nb_channels);
 
     handle->map = *config;
 

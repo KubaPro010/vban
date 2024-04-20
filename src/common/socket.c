@@ -138,7 +138,7 @@ int socket_open(socket_handle_t handle)
         return -EINVAL;
     }
 
-    logger_log(LOG_INFO, "%s: opening socket with port %d", __func__, handle->config.port);
+    // logger_log(LOG_INFO, "%s: opening socket with port %d", __func__, handle->config.port);
 
 #ifndef _WIN32
     if (handle->fd != 0)
@@ -212,7 +212,7 @@ int socket_open(socket_handle_t handle)
         }
     }
 
-    logger_log(LOG_INFO, "%s with port: %d", __func__, handle->config.port);
+    logger_log(LOG_INFO, "%s: opened socket with port: %d", __func__, handle->config.port);
 
     return 0;
 }
