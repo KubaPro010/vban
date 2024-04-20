@@ -219,7 +219,7 @@ int main(int argc, char* const* argv)
     struct stream_config_t stream_config;
     struct main_t   main_s;
 
-    printf("vban_receptor version %s (radioOS edit)\n\n", VBAN_VERSION);
+    printf("vban_receptor version %s\n\n", VBAN_VERSION);
 
     memset(&config, 0, sizeof(struct config_t));
     memset(&main_s, 0, sizeof(struct main_t));
