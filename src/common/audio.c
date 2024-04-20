@@ -245,37 +245,6 @@ int audio_write(audio_handle_t handle, char const* buffer, size_t size)
     return AUDIO_MAP_REVERSE_INPUT_SIZE(handle, handle->backend->write(handle->backend, AUDIO_MAP_OUTPUT_PTR(handle, buffer), AUDIO_MAP_OUTPUT_SIZE(handle, size)));
 }
 
-int audio_read(audio_handle_t handle, char* buffer, size_t size)
-{
-    int ret = 0;
-
-    logger_log(LOG_DEBUG, "%s invoked with size %d", __func__, size);
-
-    if ((handle == 0) || (buffer == 0))
-    {
-        logger_log(LOG_FATAL, "%s: null pointer argument", __func__);
-        return -EINVAL;
-    }
-
-    ret = handle->backend->read(handle->backend, AUDIO_MAP_REVERSE_INPUT_PTR(handle, buffer), AUDIO_MAP_REVERSE_INPUT_SIZE(handle, size));
-    if (ret < 0)
-    {
-        logger_log(LOG_ERROR, "%s: backend read failed", __func__);
-        return ret;
-    }
-    
-    size = ret;
-
-    ret = audio_map_channels(handle, buffer, size, 1);
-    if (ret < 0)
-    {
-        logger_log(LOG_ERROR, "%s: audio_map_channels failed", __func__);
-        return ret;
-    }
-
-    return AUDIO_MAP_OUTPUT_SIZE(handle, size);
-}
-
 int audio_map_channels(audio_handle_t handle, char* buffer, size_t size, char reverse)
 {
     int ret = 0;

@@ -26,7 +26,6 @@ struct pipe_backend_t
 static int pipe_open(audio_backend_handle_t handle, char const* output_name, enum audio_direction direction, size_t buffer_size, struct stream_config_t const* config);
 static int pipe_close(audio_backend_handle_t handle);
 static int pipe_write(audio_backend_handle_t handle, char const* data, size_t size);
-static int pipe_read(audio_backend_handle_t handle, char* data, size_t size);
 
 int pipe_backend_init(audio_backend_handle_t* handle)
 {
@@ -48,7 +47,6 @@ int pipe_backend_init(audio_backend_handle_t* handle)
     pipe_backend->parent.open               = pipe_open;
     pipe_backend->parent.close              = pipe_close;
     pipe_backend->parent.write              = pipe_write;
-    pipe_backend->parent.read               = pipe_read;
 
     *handle = (audio_backend_handle_t)pipe_backend;
 

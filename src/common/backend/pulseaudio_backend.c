@@ -13,7 +13,6 @@ struct pulseaudio_backend_t
 static int pulseaudio_open(audio_backend_handle_t handle, char const* device_name, enum audio_direction direction, size_t buffer_size, struct stream_config_t const* config);
 static int pulseaudio_close(audio_backend_handle_t handle);
 static int pulseaudio_write(audio_backend_handle_t handle, char const* data, size_t size);
-static int pulseaudio_read(audio_backend_handle_t handle, char* data, size_t size);
 
 static enum pa_sample_format vban_to_pulseaudio_format(enum VBanBitResolution bit_resolution)
 {
@@ -60,7 +59,6 @@ int pulseaudio_backend_init(audio_backend_handle_t* handle)
     pulseaudio_backend->parent.open               = pulseaudio_open;
     pulseaudio_backend->parent.close              = pulseaudio_close;
     pulseaudio_backend->parent.write              = pulseaudio_write;
-    pulseaudio_backend->parent.read              = pulseaudio_read;
 
     *handle = (audio_backend_handle_t)pulseaudio_backend;
 

@@ -37,7 +37,6 @@ struct file_backend_t
 static int file_open(audio_backend_handle_t handle, char const* output_name, enum audio_direction direction, size_t buffer_size, struct stream_config_t const* config);
 static int file_close(audio_backend_handle_t handle);
 static int file_write(audio_backend_handle_t handle, char const* data, size_t size);
-static int file_read(audio_backend_handle_t handle, char* data, size_t size);
 
 int file_backend_init(audio_backend_handle_t* handle)
 {
@@ -59,7 +58,6 @@ int file_backend_init(audio_backend_handle_t* handle)
     file_backend->parent.open               = file_open;
     file_backend->parent.close              = file_close;
     file_backend->parent.write              = file_write;
-    file_backend->parent.read               = file_read;
 
     *handle = (audio_backend_handle_t)file_backend;
 
