@@ -104,18 +104,6 @@ static size_t computeSize(unsigned char quality)
         case 5:
             nnn = 16384;
             break;
-        
-        case 6:
-            nnn = 32768;
-            break;
-
-        case 7:
-            nnn = 65536;
-            break;
-
-        case 8:
-            nnn = 131072;
-            break;
 
         default:
             break;
