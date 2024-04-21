@@ -249,6 +249,15 @@ int main(int argc, char* const* argv)
             //     MainRun = 0;
             //     break;
             // }
+            if (ret < 0)
+            {
+                ret = audio_init(&main_s.audio, &config.audio);
+                if (ret != 0)
+                {
+                    MainRun = 0;
+                    break;
+                }
+            }
         }
     }
 
