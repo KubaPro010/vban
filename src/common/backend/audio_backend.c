@@ -12,6 +12,9 @@
 #if PULSEAUDIO
 #include "pulseaudio_backend.h"
 #endif
+#if JACK
+#include "jack_backend.h"
+#endif
 
 #define HELP_TEXT_LEN   2048
 
@@ -28,6 +31,9 @@ static struct backend_list_item_t const backend_list[] =
     #endif
     #if PULSEAUDIO
     { PULSEAUDIO_BACKEND_NAME, pulseaudio_backend_init },
+    #endif
+    #if JACK
+    { JACK_BACKEND_NAME, jack_backend_init },
     #endif
     { PIPE_BACKEND_NAME, pipe_backend_init },
     { FILE_BACKEND_NAME, file_backend_init }
@@ -73,4 +79,3 @@ char const* audio_backend_get_help()
     
     return help_text;
 }
-

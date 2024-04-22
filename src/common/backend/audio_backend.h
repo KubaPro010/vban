@@ -26,4 +26,3 @@ int audio_backend_get_by_name(char const* name, audio_backend_handle_t* backend)
 char const* audio_backend_get_help();
 
 #endif /*__AUDIO_BACKEND_H__*/
-

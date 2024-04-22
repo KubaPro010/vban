@@ -129,4 +129,13 @@ int audio_set_map_config(audio_handle_t handle, struct audio_map_config_t const*
  */
 int audio_write(audio_handle_t handle, char const* buffer, size_t size);
 
+/**
+ * Read data dwifrom to audio
+ * @param handle object handle
+ * @param buffer data to read to 
+ * @param size size of the data to read
+ * @return size read upon success, negative value otherwise
+ */
+int audio_read(audio_handle_t handle, char* buffer, size_t size);
+
 #endif /*__AUDIO_H__*/

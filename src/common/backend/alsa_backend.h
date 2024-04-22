@@ -8,4 +8,3 @@
 int alsa_backend_init(audio_backend_handle_t* handle);
 
 #endif /*__ALSA_BACKEND_H__*/
-

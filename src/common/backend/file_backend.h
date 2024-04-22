@@ -26,4 +26,3 @@
 int file_backend_init(audio_backend_handle_t* handle);
 
 #endif /*__FILE_BACKEND_H__*/
-

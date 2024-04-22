@@ -14,6 +14,7 @@ struct alsa_backend_t
 static int alsa_open(audio_backend_handle_t handle, char const* output_name, enum audio_direction direction, size_t buffer_size, struct stream_config_t const* config);
 static int alsa_close(audio_backend_handle_t handle);
 static int alsa_write(audio_backend_handle_t handle, char const* data, size_t size);
+static int alsa_read(audio_backend_handle_t handle, char* data, size_t size);
 
 static snd_pcm_format_t vban_to_alsa_format(enum VBanBitResolution bit_resolution)
 {
@@ -62,6 +63,7 @@ int alsa_backend_init(audio_backend_handle_t* handle)
     alsa_backend->parent.open               = alsa_open;
     alsa_backend->parent.close              = alsa_close;
     alsa_backend->parent.write              = alsa_write;
+    alsa_backend->parent.read               = alsa_read;
 
     *handle = (audio_backend_handle_t)alsa_backend;
 
@@ -177,6 +179,44 @@ int alsa_write(audio_backend_handle_t handle, char const* data, size_t size)
     else if (ret > 0 && ret < nb_frame)
     {
         logger_log(LOG_ERROR, "%s: short write (expected %lu, wrote %i)", __func__, nb_frame, ret);
+    }
+
+    return ret * alsa_backend->frame_size;
+}
+
+int alsa_read(audio_backend_handle_t handle, char* data, size_t size)
+{
+    int ret = 0;
+    struct alsa_backend_t* const alsa_backend = (struct alsa_backend_t*)handle;
+    size_t nb_frame = 0;
+
+    if ((handle == 0) || (data == 0))
+    {
+        logger_log(LOG_ERROR, "%s: handle or data pointer is null", __func__);
+        return -EINVAL;
+    }
+
+    if (alsa_backend->alsa_handle == 0)
+    {
+        logger_log(LOG_ERROR, "%s: device not open", __func__);
+        return -ENODEV;
+    }
+
+    nb_frame = size / alsa_backend->frame_size;
+
+    ret = snd_pcm_readi(alsa_backend->alsa_handle, data, nb_frame);
+    if (ret < 0)
+    {
+        logger_log(LOG_ERROR, "%s: snd_pcm_writei failed: %s", __func__, snd_strerror(ret));
+        ret = snd_pcm_recover(alsa_backend->alsa_handle, ret, 0);
+        if (ret < 0)
+        {
+            logger_log(LOG_ERROR, "%s: snd_pcm_writei failed: %s", __func__, snd_strerror(ret));
+        }
+    }
+    else if (ret > 0 && ret < nb_frame)
+    {
+        logger_log(LOG_ERROR, "%s: short read (expected %lu, wrote %i)", __func__, nb_frame, ret);
     }
 
     return ret * alsa_backend->frame_size;
