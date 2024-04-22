@@ -101,7 +101,7 @@ int get_options(struct config_t* config, int argc, char* const* argv)
 {
     int c = 0;
     int ret = 0;
-    int quality = 1;
+    int quality = 0;
 
     static const struct option options[] =
     {
@@ -124,7 +124,6 @@ int get_options(struct config_t* config, int argc, char* const* argv)
     config->stream.nb_channels  = 2;
     config->stream.sample_rate  = 44100;
     config->stream.bit_fmt      = VBAN_BITFMT_16_INT;
-    config->audio.buffer_size   = computeSize(quality);
 
     config->socket.direction    = SOCKET_OUT;
 
@@ -193,6 +192,8 @@ int get_options(struct config_t* config, int argc, char* const* argv)
         }
     }
 
+    config->audio.buffer_size   = computeSize(quality);
+    
     /** check if we got all arguments */
     if ((config->socket.ip_address[0] == 0)
         || (config->socket.port == 0)
