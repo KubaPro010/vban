@@ -14,7 +14,7 @@ AM_LDFLAGS += -lpulse -lpulse-simple
 AM_CFLAGS += -DPULSEAUDIO
 endif
 
-bin_PROGRAMS = vban_receptor vban_sendtext
+bin_PROGRAMS = vban_receptor vban_emitter vban_sendtext
 vban_receptor_SOURCES = receptor/main.c common/version.h \
 						common/audio.h common/audio.c common/packet.h common/packet.c \
 						common/backend/audio_backend.h common/backend/audio_backend.c \
