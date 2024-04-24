@@ -80,7 +80,7 @@ void usage()
 
 static size_t computeSize(unsigned char quality)
 {
-    size_t nnn = 512;
+    size_t nnn = 128;
 
     for (int i = 0; i < quality; ++i) {
         nnn *= 2;
