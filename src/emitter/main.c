@@ -87,8 +87,6 @@ static size_t computeSize(unsigned char quality)
         nnn *= 2;
     }
 
-    nnn=nnn*3;
-
     if (nnn < nmin)
     {
         nnn = nmin;
