@@ -80,18 +80,11 @@ void usage()
 
 static size_t computeSize(unsigned char quality)
 {
-    size_t const nmin = VBAN_PROTOCOL_MAX_SIZE;
     size_t nnn = 512;
 
     for (int i = 0; i < quality; ++i) {
         nnn *= 2;
     }
-
-    if (nnn < nmin)
-    {
-        nnn = nmin;
-    }
-
     return nnn;
 }
 
