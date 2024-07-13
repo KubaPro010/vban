@@ -129,13 +129,7 @@ int get_options(struct config_t* config, int argc, char* const* argv)
         return 1;
     }
 
-    if (optind == argc)
-    {
-        logger_log(LOG_FATAL, "Missing message argument");
-        usage();
-        return 1;
-    }
-    else if (optind < argc - 1)
+    if (optind < argc - 1)
     {
         logger_log(LOG_FATAL, "Too many arguments");
         usage();
@@ -185,6 +179,8 @@ int main(int argc, char* const* argv)
     strcpy(hdr_d->HostName_ascii, "pithree");
     strcpy(hdr_d->UserName_utf8, "radio95");
     strcpy(hdr_d->UserComment_utf8, "radio95 broadcast computer");
+    strcpy(hdr_d->DistantIP_ascii, "192.168.1.22");
+    hdr_d->DistantPort = 9990;
     strncpy((char*)&main_s.buffer + sizeof(struct VBanHeader), (char*)&main_s.data_buffer, VBAN_DATA_MAX_SIZE-1);
 
     ret = socket_init(&main_s.socket, &config.socket);
