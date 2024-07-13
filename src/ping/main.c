@@ -30,15 +30,13 @@ struct config_t
 {
     struct socket_config_t      socket;
     char                        stream_name[VBAN_STREAM_NAME_SIZE];
-    int                         ident;
-    int                         format;
 };
 
 struct main_t
 {
     socket_handle_t             socket;
     char                        buffer[VBAN_PROTOCOL_MAX_SIZE];
-    char                        data_buffer[VBAN_PROTOCOL_MAX_SIZE];
+    char                        data_buffer[VBAN_PROTOCOL_MAX_SIZE-1];
 };
 
 void usage()
@@ -47,8 +45,6 @@ void usage()
     printf("-i, --ipaddress=IP      : MANDATORY. ipaddress to send stream to\n");
     printf("-p, --port=PORT         : MANDATORY. port to use\n");
     printf("-s, --streamname=NAME   : streamname to use\n");
-    printf("-n, --ident=VALUE       : Subchannel identification. default 0\n");
-    printf("-f, --format=VALUE      : Text format used. can be: 0 (ASCII), 1 (UTF8), 2 (WCHAR), 240 (USER). default 1\n");
     printf("-l, --loglevel=LEVEL    : Log level, from 0 (FATAL) to 4 (DEBUG). default is 1 (ERROR)\n");
     printf("-h, --help              : display this message\n\n");
 }
@@ -63,16 +59,12 @@ int get_options(struct config_t* config, int argc, char* const* argv)
         {"ipaddress",   required_argument,  0, 'i'},
         {"port",        required_argument,  0, 'p'},
         {"streamname",  required_argument,  0, 's'},
-        {"ident",       required_argument,  0, 'n'},
-        {"format",      required_argument,  0, 'f'},
         {"loglevel",    required_argument,  0, 'l'},
         {"help",        no_argument,        0, 'h'},
         {0,             0,                  0,  0 }
     };
 
     // default values
-    config->ident   = 0;
-    config->format  = 1;
     config->socket.direction    = SOCKET_OUT;
 
     /* yes, I assume config is not 0 */
@@ -94,14 +86,6 @@ int get_options(struct config_t* config, int argc, char* const* argv)
 
             case 's':
                 strncpy(config->stream_name, optarg, VBAN_STREAM_NAME_SIZE-1);
-                break;
-
-            case 'n':
-                config->ident = atoi(optarg);
-                break;
-
-            case 'f':
-                config->format = atoi(optarg);
                 break;
 
             case 'l':
@@ -191,9 +175,9 @@ int main(int argc, char* const* argv)
 
     hdr->vban       = VBAN_HEADER_FOURC;
     hdr->format_SR  = VBAN_PROTOCOL_SERIAL;
+    hdr->format_nbc = 0;
     hdr->format_nbs = 0;
-    hdr->format_nbc = config.ident;
-    hdr->format_bit = config.format;
+    hdr->format_bit = 0;
     strncpy(hdr->streamname, config.stream_name, VBAN_STREAM_NAME_SIZE);
     hdr->nuFrame    = 0;
 
