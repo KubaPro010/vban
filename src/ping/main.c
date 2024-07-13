@@ -155,6 +155,7 @@ int main(int argc, char* const* argv)
     hdr_d->bitfeature = (1 | 2);
     hdr_d->MinRate = 32000;
     hdr_d->MaxRate = 48000;
+    hdr_d->PreferedRate = 48000;
     strcpy(hdr_d->LangCode_ascii, "en-pl");
     strcpy(hdr_d->DeviceName_ascii, "Raspberry Pi 3 A+");
     strcpy(hdr_d->ManufacturerName_ascii, "Raspberry Pi");
