@@ -40,6 +40,31 @@ struct VBanHeader
     uint32_t    nuFrame;                            /* growing frame number. */
 } __attribute__((packed));
 
+struct VBanServiceData
+{
+    uint32_t bitType; /* VBAN device type*/
+    uint32_t bitfeature; /* VBAN bit feature */
+    uint32_t bitfeatureEx; /* VBAN extra bit feature */
+    uint32_t PreferedRate; /* VBAN Preferred sample rate */
+    uint32_t MinRate; /* VBAN Min samplerate supported */
+    uint32_t MaxRate; /* VBAN Max Samplerate supported */
+    uint32_t color_rgb; /* user color */
+    uint8_t nVersion[4]; /* App version 4 bytes number */
+    char GPS_Position[8]; /* Device position */
+    char USER_Position[8]; /* Device position defined by a user process */
+    char LangCode_ascii[8]; /* main language used by user FR, EN, etc..*/
+    char reserved_ascii[8]; /* unused : must be ZERO*/
+    char reservedEx[64]; /* unused : must be ZERO*/
+    char DistantIP_ascii[32]; /* Distant IP*/
+    uint16_t DistantPort; /* Distant port*/
+    uint16_t DistantReserved; /* Reserved*/
+    char DeviceName_ascii[64]; /* Device Name (physical device) */
+    char ManufacturerName_ascii[64]; /* Manufacturer Name */
+    char ApplicationName_ascii[64]; /* Application Name */
+    char HostName_ascii[64]; /* dns host name */
+    char UserName_utf8[128]; /* User Name */
+    char UserComment_utf8[128]; /* User Comment/ Mood/ Remark/ message */
+} __attribute__((packed));
 
 #define VBAN_SR_MASK                0x1F
 #define VBAN_SR_MAXNUMBER           21
@@ -56,6 +81,7 @@ enum VBanProtocol
     VBAN_PROTOCOL_AUDIO         =   0x00,
     VBAN_PROTOCOL_SERIAL        =   0x20,
     VBAN_PROTOCOL_TXT           =   0x40,
+    VBAN_PROTOCOL_SERVICE       =   0x60,
     VBAN_PROTOCOL_UNDEFINED_1   =   0x80,
     VBAN_PROTOCOL_UNDEFINED_2   =   0xA0,
     VBAN_PROTOCOL_UNDEFINED_3   =   0xC0,
@@ -78,7 +104,7 @@ enum VBanBitResolution
 
 static int const VBanBitResolutionSize[VBAN_BIT_RESOLUTION_MAX] =
 {
-    1, 2, 3, 4, 4, 8, 
+    1, 2, 3, 4, 4, 8,
 };
 
 #define VBAN_RESERVED_MASK          0x08

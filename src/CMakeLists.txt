@@ -48,7 +48,16 @@ add_executable(vban_sendtext
     vban/vban.h
     common/logger.h
     common/logger.c)
-    
+
+add_executable(vban_ping
+    ping/main.c
+    common/version.h
+    common/socket.h
+    common/socket.c
+    vban/vban.h
+    common/logger.h
+    common/logger.c)
+
 include(GNUInstallDirs)
 
 foreach(exe vban_receptor vban_sendtext)
@@ -64,11 +73,6 @@ foreach(exe vban_receptor vban_sendtext)
         # can't find something about pulse-simple in the pulseaudioconfig.cmake file,
         # hard code the linking as it is needed
         target_link_libraries(     ${exe} PRIVATE pulse-simple ${PULSEAUDIO_LIBRARY})
-    endif()
-    
-    if(WIN32)
-        # Windows has no sys/socket.h, need to use Winsock2.h and link to lib
-        target_link_libraries(     ${exe} PRIVATE ws2_32)
     endif()
 
     install(TARGETS ${exe} DESTINATION "${CMAKE_INSTALL_BINDIR}")

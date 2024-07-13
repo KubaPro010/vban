@@ -21,25 +21,17 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
-#ifndef _WIN32
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <sys/poll.h>
-#else // _WIN32
-#include <winsock2.h>
-#endif
 #include <unistd.h>
 #include "common/logger.h"
 
 struct socket_t
 {
     struct socket_config_t  config;
-#ifndef _WIN32
     int                     fd;
-#else // _WIN32
-    SOCKET fd;
-#endif
 };
 
 static int socket_open(socket_handle_t handle);
@@ -62,16 +54,6 @@ int socket_init(socket_handle_t* handle, struct socket_config_t const* config)
         logger_log(LOG_FATAL, "%s: could not allocate memory", __func__);
         return -ENOMEM;
     }
-#ifdef _WIN32
-    WSADATA wsadata;
-    ret = WSAStartup(MAKEWORD(2,2), &wsadata);
-    if (ret != 0)
-    {
-        logger_log(LOG_FATAL, "%s: WSAStartup failed: %d", __func__, ret);
-        return -EINVAL;
-    }
-    (*handle)->fd = INVALID_SOCKET;
-#endif
 
     (*handle)->config = *config;
 
@@ -100,9 +82,6 @@ int socket_release(socket_handle_t* handle)
         free(*handle);
         *handle = 0;
     }
-#ifdef _WIN32
-    WSACleanup();
-#endif
 
     return ret;
 }
@@ -115,21 +94,7 @@ int socket_is_broadcast_address(char const* ip)
 int socket_open(socket_handle_t handle)
 {
     int ret = 0;
-#ifndef _WIN32
-    int optflag = 0;
-#else // _WIN32
-    // optflag is used as optval for setsockopt(), windows expects it to be a char
-    // posix expects a void *
-    // from https://docs.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-setsockopt
-    // int setsockopt(
-    //   SOCKET     s,
-    //   int        level,
-    //   int        optname,
-    //   const char *optval,
-    //   int        optlen
-    // );
-    char optflag = 0;
-#endif
+    int optflag = 1;
     struct sockaddr_in si_me;
 
     if (handle == 0)
@@ -140,11 +105,7 @@ int socket_open(socket_handle_t handle)
 
     // logger_log(LOG_INFO, "%s: opening socket with port %d", __func__, handle->config.port);
 
-#ifndef _WIN32
     if (handle->fd != 0)
-#else // _WIN32
-    if (handle->fd != INVALID_SOCKET)
-#endif
     {
         ret = socket_close(handle);
         if (ret != 0)
@@ -155,7 +116,6 @@ int socket_open(socket_handle_t handle)
     }
 
     handle->fd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-#ifndef _WIN32
     if (handle->fd < 0)
     {
         logger_log(LOG_ERROR, "%s: unable to create socket", __func__);
@@ -163,16 +123,12 @@ int socket_open(socket_handle_t handle)
         handle->fd = 0;
         return ret;
     }
-#else // _WIN32
-    if (handle->fd == INVALID_SOCKET)
+
+    if (setsockopt(handle->fd, SOL_SOCKET, SO_REUSEADDR, &optflag, sizeof(optflag)) < 0)
     {
-        logger_log(LOG_ERROR, "%s: unable to create socket", __func__);
-        ret = -1;
-        handle->fd = INVALID_SOCKET;
-        return ret;
+        logger_log(LOG_ERROR, "%s: unable to set reuse addr", __func__);
     }
-#endif
-    
+
     if (handle->config.direction == SOCKET_IN)
     {
         memset(&si_me, 0, sizeof(si_me));
@@ -181,19 +137,11 @@ int socket_open(socket_handle_t handle)
         si_me.sin_addr.s_addr   = htonl(INADDR_ANY);
         ret = bind(handle->fd, (struct sockaddr const*)&si_me, sizeof(si_me));
 
-#ifndef _WIN32
         if (ret < 0)
-#else // _WIN32
-        if (ret == SOCKET_ERROR)
-#endif
         {
             logger_log(LOG_ERROR, "%s: unable to bind socket", __func__);
             socket_close(handle);
-#ifndef _WIN32
             return errno;
-#else // _WIN32
-            return WSAGetLastError();
-#endif
         }
     }
     else
@@ -201,7 +149,6 @@ int socket_open(socket_handle_t handle)
         if (socket_is_broadcast_address(handle->config.ip_address))
         {
             logger_log(LOG_DEBUG, "%s: broadcast address detected", __func__);
-            optflag = 1;
             ret = setsockopt(handle->fd, SOL_SOCKET, SO_BROADCAST, &optflag, sizeof(optflag));
             if (ret < 0)
             {
@@ -229,19 +176,11 @@ int socket_close(socket_handle_t handle)
 
     logger_log(LOG_INFO, "%s: closing socket with port %d", __func__, handle->config.port);
 
-#ifndef _WIN32
     if (handle->fd != 0)
-#else // _WIN32
-    if (handle->fd == INVALID_SOCKET)
-#endif
     {
         ret = close(handle->fd);
         handle->fd = 0;
-#ifndef _WIN32
         if (ret != 0)
-#else // _WIN32
-        if (ret == SOCKET_ERROR)
-#endif
         {
             logger_log(LOG_ERROR, "%s: unable to close socket", __func__);
             return ret;
@@ -255,11 +194,7 @@ int socket_read(socket_handle_t handle, char* buffer, size_t size)
 {
     int ret = 0;
     struct sockaddr_in si_other;
-#ifndef _WIN32
     socklen_t slen = sizeof(si_other);
-#else // _WIN32
-    int slen = sizeof(si_other);
-#endif
 
     logger_log(LOG_DEBUG, "%s invoked", __func__);
 
@@ -271,11 +206,7 @@ int socket_read(socket_handle_t handle, char* buffer, size_t size)
 
     logger_log(LOG_DEBUG, "%s ip %s", __func__, handle->config.ip_address);
 
-#ifndef _WIN32
     if (handle->fd == 0)
-#else // _WIN32
-    if (handle->fd == INVALID_SOCKET)
-#endif
     {
         logger_log(LOG_ERROR, "%s: socket is not open", __func__);
         return -ENODEV;
@@ -305,11 +236,7 @@ int socket_write(socket_handle_t handle, char const* buffer, size_t size)
 {
     int ret = 0;
     struct sockaddr_in si_other;
-#ifndef _WIN32
     socklen_t slen = sizeof(si_other);
-#else // _WIN32
-    int slen = sizeof(si_other);
-#endif
 
     logger_log(LOG_DEBUG, "%s invoked", __func__);
 
