@@ -23,7 +23,6 @@
 #include "common/logger.h"
 
 static int packet_pcm_check(char const* buffer, size_t size);
-static size_t vban_sr_from_value(unsigned int value);
 
 int packet_check(char const* streamname, char const* buffer, size_t size)
 {
@@ -121,7 +120,7 @@ static int packet_pcm_check(char const* buffer, size_t size)
         logger_log(LOG_WARNING, "%s: invalid payload size, expected %d, got %d", __func__, payload_size, (size - VBAN_HEADER_SIZE));
         return -EINVAL;
     }
-    
+
     return 0;
 }
 

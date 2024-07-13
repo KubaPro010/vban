@@ -72,5 +72,6 @@ int packet_init_header(char* buffer, struct stream_config_t const* stream_config
  */
 int packet_set_new_content(char* buffer, size_t payload_size);
 
+static size_t vban_sr_from_value(unsigned int value);
 #endif /*__PACKET_H__*/
 
