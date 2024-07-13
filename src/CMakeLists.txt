@@ -47,7 +47,9 @@ add_executable(vban_sendtext
     common/socket.c
     vban/vban.h
     common/logger.h
-    common/logger.c)
+    common/logger.c
+    common/packet.h
+    common/packet.c)
 
 add_executable(vban_ping
     ping/main.c

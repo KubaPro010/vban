@@ -25,6 +25,7 @@
 #include "common/version.h"
 #include "common/socket.h"
 #include "common/logger.h"
+#include "common/packet.h"
 
 struct config_t
 {

@@ -36,7 +36,8 @@ vban_sendtext_SOURCES = sendtext/main.c common/version.h \
 
 vban_ping_SOURCES = ping/main.c common/version.h \
 						common/socket.h common/socket.c \
-						vban/vban.h common/logger.h common/logger.c
+						vban/vban.h common/logger.h common/logger.c \
+						common/packet.h common/packet.c 
 
 if ALSA
 vban_receptor_SOURCES += common/backend/alsa_backend.h common/backend/alsa_backend.c
