@@ -43,7 +43,6 @@ void usage()
     printf("\nUsage: vban_ping [OPTIONS] MESSAGE\n\n");
     printf("-i, --ipaddress=IP      : MANDATORY. ipaddress to send stream to\n");
     printf("-p, --port=PORT         : MANDATORY. port to use\n");
-    printf("-s, --streamname=NAME   : streamname to use\n");
     printf("-l, --loglevel=LEVEL    : Log level, from 0 (FATAL) to 4 (DEBUG). default is 1 (ERROR)\n");
     printf("-h, --help              : display this message\n\n");
 }
@@ -57,7 +56,6 @@ int get_options(struct config_t* config, int argc, char* const* argv)
     {
         {"ipaddress",   required_argument,  0, 'i'},
         {"port",        required_argument,  0, 'p'},
-        {"streamname",  required_argument,  0, 's'},
         {"loglevel",    required_argument,  0, 'l'},
         {"help",        no_argument,        0, 'h'},
         {0,             0,                  0,  0 }
@@ -157,7 +155,7 @@ int main(int argc, char* const* argv)
     hdr_d->bitfeature = 1;
     hdr_d->MinRate = 8;
     hdr_d->MaxRate = 3;
-    strcpy(hdr_d->LangCode_ascii, "EN");
+    strcpy(hdr_d->LangCode_ascii, "en-pl");
     strcpy(hdr_d->DeviceName_ascii, "Raspberry Pi 3 A+");
     strcpy(hdr_d->ManufacturerName_ascii, "Raspberry Pi");
     strcpy(hdr_d->HostName_ascii, "pithree");
@@ -178,7 +176,7 @@ int main(int argc, char* const* argv)
     hdr->format_nbc = 0;
     hdr->format_nbs = 0;
     hdr->format_bit = 0;
-    strncpy(hdr->streamname, config.stream_name, VBAN_STREAM_NAME_SIZE);
+    strncpy(hdr->streamname, "VBAN Service", VBAN_STREAM_NAME_SIZE);
     hdr->nuFrame    = 0;
 
     logger_log(LOG_DEBUG, "%s: packet is vban: %u, sr: %d, nbs: %d, nbc: %d, bit: %d, name: %s, nu: %u, msg: %s",
