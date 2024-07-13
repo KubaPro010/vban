@@ -152,7 +152,7 @@ int main(int argc, char* const* argv)
     }
 
     hdr_d->bitType = 1;
-    hdr_d->bitfeature = 1;
+    hdr_d->bitfeature = (1 | 2);
     hdr_d->MinRate = 8;
     hdr_d->MaxRate = 3;
     strcpy(hdr_d->LangCode_ascii, "en-pl");
