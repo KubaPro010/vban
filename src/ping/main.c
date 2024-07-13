@@ -36,7 +36,6 @@ struct main_t
 {
     socket_handle_t             socket;
     char                        buffer[VBAN_PROTOCOL_MAX_SIZE];
-    char                        data_buffer[VBAN_PROTOCOL_MAX_SIZE-1];
 };
 
 void usage()
@@ -132,7 +131,7 @@ int main(int argc, char* const* argv)
     char const* msg = 0;
     size_t len = 0;
     struct VBanHeader* const hdr = (struct VBanHeader*)&main_s.buffer;
-    struct VBanServiceData* const hdr_d = (struct VBanServiceData*)&main_s.data_buffer;
+    struct VBanServiceData* const hdr_d = (struct VBanServiceData*)(main_s.buffer + sizeof(struct VBanHeader));
 
     printf("%s version %s\n\n", argv[0], VBAN_VERSION);
 
@@ -149,10 +148,11 @@ int main(int argc, char* const* argv)
     len = strlen(msg);
     if (len > VBAN_DATA_MAX_SIZE-1)
     {
-        logger_log(LOG_FATAL, "Message too long. max lenght is %d", VBAN_DATA_MAX_SIZE-1);
+        logger_log(LOG_FATAL, "Message too long. max length is %d", VBAN_DATA_MAX_SIZE-1);
         usage();
         return 1;
     }
+
     hdr_d->bitType = 1;
     hdr_d->bitfeature = 1;
     hdr_d->MinRate = 8;
@@ -165,7 +165,7 @@ int main(int argc, char* const* argv)
     strcpy(hdr_d->UserComment_utf8, "radio95 broadcast computer");
     strcpy(hdr_d->DistantIP_ascii, "192.168.1.22");
     hdr_d->DistantPort = 9990;
-    strncpy((char*)&main_s.buffer + sizeof(struct VBanHeader), (char*)main_s.data_buffer, VBAN_DATA_MAX_SIZE-1);
+    strncpy((char*)(hdr_d + 1), msg, len);  // Copy message into the data buffer right after hdr_d
 
     ret = socket_init(&main_s.socket, &config.socket);
     if (ret != 0)
@@ -182,12 +182,11 @@ int main(int argc, char* const* argv)
     hdr->nuFrame    = 0;
 
     logger_log(LOG_DEBUG, "%s: packet is vban: %u, sr: %d, nbs: %d, nbc: %d, bit: %d, name: %s, nu: %u, msg: %s",
-        __func__, hdr->vban, hdr->format_SR, hdr->format_nbs, hdr->format_nbc, hdr->format_bit, hdr->streamname, hdr->nuFrame, (char*)&main_s.buffer + sizeof(struct VBanHeader));
+        __func__, hdr->vban, hdr->format_SR, hdr->format_nbs, hdr->format_nbc, hdr->format_bit, hdr->streamname, hdr->nuFrame, (char*)(hdr_d + 1));
 
-    ret = socket_write(main_s.socket, main_s.buffer, len + sizeof(struct VBanHeader));
+    ret = socket_write(main_s.socket, main_s.buffer, sizeof(struct VBanHeader) + sizeof(struct VBanServiceData) + len);
 
     socket_release(&main_s.socket);
 
     return ret;
 }
-
