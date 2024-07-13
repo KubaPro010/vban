@@ -165,7 +165,7 @@ int main(int argc, char* const* argv)
     strcpy(hdr_d->UserComment_utf8, "radio95 broadcast computer");
     strcpy(hdr_d->DistantIP_ascii, "192.168.1.22");
     hdr_d->DistantPort = 9990;
-    strncpy((char*)&main_s.buffer + sizeof(struct VBanHeader), (char*)&main_s.data_buffer, VBAN_DATA_MAX_SIZE-1);
+    strncpy((char*)&main_s.buffer + sizeof(struct VBanHeader), (char*)main_s.data_buffer, VBAN_DATA_MAX_SIZE-1);
 
     ret = socket_init(&main_s.socket, &config.socket);
     if (ret != 0)
