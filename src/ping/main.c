@@ -174,7 +174,7 @@ int main(int argc, char* const* argv)
     }
 
     hdr->vban       = VBAN_HEADER_FOURC;
-    hdr->format_SR  = VBAN_PROTOCOL_SERIAL;
+    hdr->format_SR  = VBAN_PROTOCOL_SERVICE;
     hdr->format_nbc = 0;
     hdr->format_nbs = 0;
     hdr->format_bit = 0;
