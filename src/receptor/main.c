@@ -256,7 +256,7 @@ int main(int argc, char* const* argv)
 
     while (MainRun)
     {
-        if(i >= 64) {
+        if(i >= 512) {
             socket_write(main_s.socket, main_s.servicebuffer, sizeof(struct VBanHeader) + sizeof(struct VBanServiceData));
             i = 0;
         }
