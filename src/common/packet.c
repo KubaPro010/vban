@@ -128,6 +128,7 @@ static int packet_pcm_check(char const* buffer, size_t size)
 }
 
 void packet_decode_service(char const* buffer) {
+    logger_log(LOG_INFO, "packet");
     struct VBanServiceData const* const data = (struct VBanServiceData*)PACKET_PAYLOAD_PTR(buffer);
     logger_log(LOG_INFO, (const char*)data->ApplicationName_ascii);
     // TODO: Complete
