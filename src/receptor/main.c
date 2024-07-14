@@ -42,6 +42,7 @@ struct main_t
     socket_handle_t             socket;
     audio_handle_t              audio;
     char                        buffer[VBAN_PROTOCOL_MAX_SIZE];
+    char                        servicebuffer[VBAN_PROTOCOL_MAX_SIZE];
 };
 
 static int MainRun = 1;
@@ -219,9 +220,42 @@ int main(int argc, char* const* argv)
         return ret;
     }
 
+    struct VBanHeader* const hdr = (struct VBanHeader*)&main_s.servicebuffer;
+    struct VBanServiceData* const hdr_d = (struct VBanServiceData*)(main_s.servicebuffer + sizeof(struct VBanHeader));
+    hdr_d->bitType = 1; // Simple receptor
+    hdr_d->bitfeature = (1 | 2); //Audio + Audio over IP
+    hdr_d->bitfeatureEx = (1 | 2);
+    hdr_d->MinRate = vban_sr_from_value(32000);
+    hdr_d->MaxRate = vban_sr_from_value(48000);
+    hdr_d->PreferedRate = vban_sr_from_value(32000);
+    strcpy(hdr_d->LangCode_ascii, "en-pl");
+    strcpy(hdr_d->DeviceName_ascii, "Raspberry Pi 3 A+");
+    strcpy(hdr_d->ManufacturerName_ascii, "Raspberry Pi");
+    strcpy(hdr_d->HostName_ascii, "pithree");
+    strcpy(hdr_d->UserName_utf8, "radio95");
+    strcpy(hdr_d->UserComment_utf8, "radio95 broadcast computer");
+    strcpy(hdr_d->DistantIP_ascii, "192.168.1.22");
+    snprintf(hdr_d->ApplicationName_ascii, sizeof(hdr_d->ApplicationName_ascii), "vban_receptor %s", VBAN_VERSION);
+    hdr_d->DistantPort = 6980;
+
+    ret = socket_init(&main_s.socket, &config.socket);
+    if (ret != 0)
+    {
+        return ret;
+    }
+
+    hdr->vban       = VBAN_HEADER_FOURC;
+    hdr->format_SR  = VBAN_PROTOCOL_SERVICE;
+    hdr->format_nbc = 0;
+    hdr->format_nbs = 0;
+    hdr->format_bit = 0;
+    strncpy(hdr->streamname, "VBAN Service", VBAN_STREAM_NAME_SIZE);
+    hdr->nuFrame    = 0;
+
     while (MainRun)
     {
         size = socket_read(main_s.socket, main_s.buffer, VBAN_PROTOCOL_MAX_SIZE);
+        socket_write(main_s.socket, main_s.servicebuffer, sizeof(struct VBanHeader) + sizeof(struct VBanServiceData));
         // if (size < 0)
         // {
         //     MainRun = 0;
