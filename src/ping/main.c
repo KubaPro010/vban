@@ -156,7 +156,7 @@ int main(int argc, char* const* argv)
     strcpy(hdr_d->UserName_utf8, "radio95");
     strcpy(hdr_d->UserComment_utf8, "radio95 broadcast computer");
     strcpy(hdr_d->DistantIP_ascii, "192.168.1.22");
-    strcpy(hdr_d->ApplicationName_ascii, __CONCAT("vban_receptor ", VBAN_VERSION));
+    snprintf(hdr_d->ApplicationName_ascii, sizeof(hdr_d->ApplicationName_ascii), "vban_receptor %s", VBAN_VERSION);
     hdr_d->DistantPort = 6980;
     strncpy((char*)(hdr_d + 1), msg, len);  // Copy message into the data buffer right after hdr_d
 
