@@ -51,15 +51,6 @@ add_executable(vban_sendtext
     common/packet.h
     common/packet.c)
 
-add_executable(vban_ping
-    ping/main.c
-    common/version.h
-    common/socket.h
-    common/socket.c
-    vban/vban.h
-    common/logger.h
-    common/logger.c)
-
 include(GNUInstallDirs)
 
 foreach(exe vban_receptor vban_sendtext)
