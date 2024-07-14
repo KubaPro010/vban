@@ -122,6 +122,7 @@ static int packet_pcm_check(char const* buffer, size_t size)
     }
 
     if(VBanSRList[sample_rate] > 48000 || VBanSRList[sample_rate] > 32000) {
+        logger_log(LOG_WARNING, "%s: packet dropped due to sampling rate (%d)", __func__, VBanSRList[sample_rate]);
         return -EINVAL;
     }
 
