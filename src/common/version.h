@@ -18,7 +18,7 @@
 #ifndef __VERSION_H__
 #define __VERSION_H__
 
-#define VBAN_VERSION "2.1.0 (radioOS edit)"
+#define VBAN_VERSION "2.1.1 (radioOS edit)"
 
 #endif /*__VERSION_H__*/
 

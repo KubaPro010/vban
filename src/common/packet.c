@@ -71,6 +71,7 @@ int packet_check(char const* streamname, char const* buffer, size_t size)
             return (codec == VBAN_CODEC_PCM) ? packet_pcm_check(buffer, size) : -EINVAL;
 
         case VBAN_PROTOCOL_SERIAL:
+        case VBAN_PROTOCOL_SERVICE:
         case VBAN_PROTOCOL_TXT:
         case VBAN_PROTOCOL_UNDEFINED_1:
         case VBAN_PROTOCOL_UNDEFINED_2:
