@@ -68,7 +68,7 @@ int get_options(struct config_t* config, int argc, char* const* argv)
     /* yes, I assume config is not 0 */
     while (1)
     {
-        c = getopt_long(argc, argv, "i:p:s:b:n:f:l:h", options, 0);
+        c = getopt_long(argc, argv, "i:p:l:h", options, 0);
         if (c == -1)
             break;
 
@@ -106,7 +106,7 @@ int get_options(struct config_t* config, int argc, char* const* argv)
     if ((config->socket.ip_address[0] == 0)
         || (config->socket.port == 0))
     {
-        logger_log(LOG_FATAL, "Missing ip address, port or stream name");
+        logger_log(LOG_FATAL, "Missing ip address or port");
         usage();
         return 1;
     }
@@ -143,21 +143,12 @@ int main(int argc, char* const* argv)
         return ret;
     }
 
-    msg = argv[argc-1];
-    len = strlen(msg);
-    if (len > VBAN_DATA_MAX_SIZE-1)
-    {
-        logger_log(LOG_FATAL, "Message too long. max length is %d", VBAN_DATA_MAX_SIZE-1);
-        usage();
-        return 1;
-    }
-
     hdr_d->bitType = 1; // Simple receptor
     hdr_d->bitfeature = (1 | 2); //Audio + Audio over IP
     hdr_d->bitfeatureEx = (1 | 2);
     hdr_d->MinRate = vban_sr_from_value(32000);
     hdr_d->MaxRate = vban_sr_from_value(48000);
-    hdr_d->PreferedRate = vban_sr_from_value(48000);
+    hdr_d->PreferedRate = vban_sr_from_value(32000);
     strcpy(hdr_d->LangCode_ascii, "en");
     strcpy(hdr_d->DeviceName_ascii, "Raspberry Pi 3 A+");
     strcpy(hdr_d->ManufacturerName_ascii, "Raspberry Pi");
