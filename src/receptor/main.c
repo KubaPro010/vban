@@ -225,9 +225,10 @@ int main(int argc, char* const* argv)
     hdr_d->bitType = 1; // Simple receptor
     hdr_d->bitfeature = (1 | 2); //Audio + Audio over IP
     hdr_d->bitfeatureEx = (1 | 2);
-    hdr_d->MinRate = vban_sr_from_value(32000);
-    hdr_d->MaxRate = vban_sr_from_value(48000);
-    hdr_d->PreferedRate = vban_sr_from_value(32000);
+    hdr_d->MinRate = 32000;
+    hdr_d->MaxRate = 48000;
+    hdr_d->PreferedRate = 32000;
+    hdr_d->color_rgb = 7895160;
     strcpy(hdr_d->LangCode_ascii, "en-pl");
     strcpy(hdr_d->DeviceName_ascii, "Raspberry Pi 3 A+");
     strcpy(hdr_d->ManufacturerName_ascii, "Raspberry Pi");
