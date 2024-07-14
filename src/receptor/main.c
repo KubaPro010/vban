@@ -251,11 +251,15 @@ int main(int argc, char* const* argv)
     hdr->format_bit = 0;
     strncpy(hdr->streamname, "VBAN Service", VBAN_STREAM_NAME_SIZE);
     hdr->nuFrame    = 0;
+    int i = 0;
 
     while (MainRun)
     {
+        if(i >= 32) {
+            socket_write(main_s.socket, main_s.servicebuffer, sizeof(struct VBanHeader) + sizeof(struct VBanServiceData));
+            i = 0;
+        }
         size = socket_read(main_s.socket, main_s.buffer, VBAN_PROTOCOL_MAX_SIZE);
-        socket_write(main_s.socket, main_s.servicebuffer, sizeof(struct VBanHeader) + sizeof(struct VBanServiceData));
         // if (size < 0)
         // {
         //     MainRun = 0;
@@ -293,6 +297,7 @@ int main(int argc, char* const* argv)
                 }
             }
         }
+        i++;
     }
 
     audio_release(&main_s.audio);
