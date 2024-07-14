@@ -222,9 +222,9 @@ int main(int argc, char* const* argv)
 
     struct VBanHeader* const hdr = (struct VBanHeader*)&main_s.servicebuffer;
     struct VBanServiceData* const hdr_d = (struct VBanServiceData*)(main_s.servicebuffer + sizeof(struct VBanHeader));
-    hdr_d->bitType = 1; // Simple receptor
-    hdr_d->bitfeature = (1 | 2); //Audio + Audio over IP
-    hdr_d->bitfeatureEx = (1 | 2);
+    hdr_d->bitType = 0x1; // Simple receptor
+    hdr_d->bitfeature = 1; //Audio
+    hdr_d->bitfeatureEx = 1;
     hdr_d->MinRate = 32000;
     hdr_d->MaxRate = 48000;
     hdr_d->PreferedRate = 32000;
@@ -237,7 +237,7 @@ int main(int argc, char* const* argv)
     strcpy(hdr_d->UserComment_utf8, "radio95 broadcast computer");
     strcpy(hdr_d->DistantIP_ascii, "192.168.1.22");
     snprintf(hdr_d->ApplicationName_ascii, sizeof(hdr_d->ApplicationName_ascii), "vban_receptor %s", VBAN_VERSION);
-    hdr_d->DistantPort = 6980;
+    hdr_d->DistantPort = config.socket.port;
 
     ret = socket_init(&main_s.socket, &config.socket);
     if (ret != 0)
