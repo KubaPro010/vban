@@ -149,13 +149,14 @@ int main(int argc, char* const* argv)
     hdr_d->MinRate = vban_sr_from_value(32000);
     hdr_d->MaxRate = vban_sr_from_value(48000);
     hdr_d->PreferedRate = vban_sr_from_value(32000);
-    strcpy(hdr_d->LangCode_ascii, "en");
+    strcpy(hdr_d->LangCode_ascii, "en-pl");
     strcpy(hdr_d->DeviceName_ascii, "Raspberry Pi 3 A+");
     strcpy(hdr_d->ManufacturerName_ascii, "Raspberry Pi");
     strcpy(hdr_d->HostName_ascii, "pithree");
     strcpy(hdr_d->UserName_utf8, "radio95");
     strcpy(hdr_d->UserComment_utf8, "radio95 broadcast computer");
     strcpy(hdr_d->DistantIP_ascii, "192.168.1.22");
+    strcpy(hdr_d->ApplicationName_ascii, __CONCAT("vban_receptor ", VBAN_VERSION));
     hdr_d->DistantPort = 6980;
     strncpy((char*)(hdr_d + 1), msg, len);  // Copy message into the data buffer right after hdr_d
 
