@@ -230,7 +230,7 @@ int main(int argc, char* const* argv)
     hdr_d->PreferedRate = 32000;
     hdr_d->color_rgb = 7895160;
     strcpy(hdr_d->LangCode_ascii, "en-pl");
-    strcpy(hdr_d->DeviceName_ascii, "Raspberry Pi 3 A+");
+    strcpy(hdr_d->DeviceName_ascii, "Raspberry Pi 5");
     strcpy(hdr_d->ManufacturerName_ascii, "Raspberry Pi");
     strcpy(hdr_d->HostName_ascii, "pithree");
     strcpy(hdr_d->UserName_utf8, "radio95");
